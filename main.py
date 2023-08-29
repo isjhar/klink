@@ -8,7 +8,7 @@ from domain.usecases.processcooccurance import ProcessCooccurance
 
 
 def main():
-    keywords = {"isjhar", "from"}
+    keywords = [["im", "isjhar"], ["from"]]
     processCooccurance = ProcessCooccurance(stemmer=NltkStemmer(), tokenizer=NltkTokenizer(), sent_tokenizer=NltkSentTokenizer(), cooccurance_counter=PandasCooccuranceCounter())
     processCooccurance.execute(keywords, "hello im isjhar from makassar. i work as software developer.")    
 
