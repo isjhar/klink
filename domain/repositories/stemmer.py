@@ -1,3 +1,3 @@
 class Stemmer:
-    def stem(token):
+    def stem(self, token):
         pass

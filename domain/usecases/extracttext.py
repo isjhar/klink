@@ -10,7 +10,6 @@ class ExtractText:
     def execute(self, text):
         sentenceResult = []
         sentences = self.sent_tokenizer.tokenize(text)
-        print(sentences)
         for sentence in sentences:
             tokenResult = [];
             tokens = self.tokenize.execute(sentence)        
