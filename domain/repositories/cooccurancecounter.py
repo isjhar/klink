@@ -1,3 +1,3 @@
 class CooccuranceCounter:
-    def process(self, tokenizedSentence):
+    def process(self, keywords, tokenizedSentence):
         pass
