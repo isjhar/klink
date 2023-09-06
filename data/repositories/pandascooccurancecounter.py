@@ -1,3 +1,4 @@
+from domain.entities.cooccurancematrix import CooccuranceMatrix
 from domain.repositories.cooccurancecounter import CooccuranceCounter
 import pandas as pd
 
@@ -27,8 +28,9 @@ class PandasCooccuranceCounter(CooccuranceCounter):
                         
                 
         df = pd.DataFrame(data, columns=["t1", "t2"])
-        co_mat = pd.crosstab(df.t1, df.t2)
-        print(df)    
+        co_mat = pd.crosstab(df.t1, df.t2, margins=True, margins_name='total')
+        cooccurance_matrix = CooccuranceMatrix(cooccurance_matrix=co_mat)
+        print(cooccurance_matrix.getHierarchicalRelationShipStrength("im isjhar", "i"))
 
     def isKeywordsEqual(self, tokens, combinedKeywords):
         concatedKeywords = combinedKeywords[0] + combinedKeywords[1]
