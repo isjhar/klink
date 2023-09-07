@@ -1,11 +1,14 @@
+from domain.repositories.senttokenizer import SentTokenizer
+from domain.repositories.tokenizer import Tokenizer
 from domain.usecases.stem import Stem
 from domain.usecases.tokenize import Tokenize
 
 
 class ExtractText:
-    def __init__(self, sent_tokenizer, tokenizer):        
+    def __init__(self, sent_tokenizer: SentTokenizer, tokenizer: Tokenizer):        
         self.tokenize = Tokenize(tokenizer)
         self.sent_tokenizer = sent_tokenizer
+        
     def execute(self, text):
         sentenceResult = []
         sentences = self.sent_tokenizer.tokenize(text)

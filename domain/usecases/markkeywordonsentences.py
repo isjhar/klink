@@ -3,34 +3,34 @@ class MarkKeywordOnSentences:
     def __init__(self):
         self.separator = "_"
         pass
-    def execute(self, keywords, tokenizedSentences):
-        combinedKeywordsDict = {}
-        largestLevel = -1
+    def execute(self, keywords, tokenized_sentences):
+        results = tokenized_sentences.copy()
+        combined_keywords_dict = {}
+        largest_level = -1
         for keyword in keywords:            
-            key = len(keyword)
-            if key > largestLevel:
-                largestLevel = key
-            if not (key in combinedKeywordsDict):
-                combinedKeywordsDict[key] = []
-            keywordBuckets = combinedKeywordsDict[key]
-            keywordBuckets.append(self.separator.join(keyword))
+            key = len(keyword.split(self.separator))
+            if key > largest_level:
+                largest_level = key
+            if not (key in combined_keywords_dict):
+                combined_keywords_dict[key] = []
+            keyword_buckets = combined_keywords_dict[key]
+            keyword_buckets.append(keyword)
 
-        print(combinedKeywordsDict)
         
-        for level in reversed(range(largestLevel+1)):
-            if not (level in combinedKeywordsDict):
+        for level in reversed(range(largest_level+1)):
+            if not (level in combined_keywords_dict):
                 continue
-            keywordBuckets = combinedKeywordsDict[level]            
+            keyword_buckets = combined_keywords_dict[level]            
             
-            for tokenizedSentence in tokenizedSentences:
-                currentIndex = 0
-                while currentIndex < len(tokenizedSentence):                
-                    currentKeyword = self.separator.join(tokenizedSentence[currentIndex:currentIndex+level])
-                    if currentKeyword in keywordBuckets:                    
-                        tokenizedSentence[currentIndex] = currentKeyword       
-                        del tokenizedSentence[currentIndex+1:currentIndex+level]                 
+            for tokenized_sentence in results:
+                current_index = 0
+                while current_index < len(tokenized_sentence):                
+                    current_keyword = self.separator.join(tokenized_sentence[current_index:current_index+level])
+                    if current_keyword in keyword_buckets:                    
+                        tokenized_sentence[current_index] = current_keyword       
+                        del tokenized_sentence[current_index+1:current_index+level]                 
                         pass
-                    currentIndex += 1 
+                    current_index += 1 
                             
 
-        print(tokenizedSentences)
+        return results
