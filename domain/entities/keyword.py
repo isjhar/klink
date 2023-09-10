@@ -8,7 +8,7 @@ class Keyword:
             if new_item < item:
                 inserted_index = i
                 break
-        self.items.insert(inserted_index, new_item)
+        self.items.insert(inserted_index, new_item)    
         
     def __str__(self) -> str:
         return "/".join(self.items)

@@ -5,7 +5,8 @@ from data.repositories.pandascooccurancecounter import PandasCooccuranceCounter
 from data.repositories.word2vecwordembedding import Word2VecWordEmbbedding
 from domain.entities.keyword import Keyword
 from domain.usecases.extracttext import ExtractText
-from domain.usecases.hierarchicalrelationshipstrength import HierarchicalRelationShipStrength
+from domain.usecases.hierarchicalrelationshipstrength import HierarchicalRelationshipStrength
+from domain.usecases.inferpairedkeywordrelationship import InferPairedKeywordRelationship
 from domain.usecases.markkeywordonsentences import MarkKeywordOnSentences
 from domain.usecases.processcooccurance import ProcessCooccurance
 from domain.usecases.senttokenize import SentTokenize
@@ -29,8 +30,8 @@ def main():
     cooccurance_matrix = processCooccurance.execute(keywords, marked_tokenized_sentences)           
 
     
-    hierachical_relationship_strength = HierarchicalRelationShipStrength(word2vec, cooccurance_matrix)
-    print(hierachical_relationship_strength.execute("im_isjhar", "from"))
+    infer_paired_keyword_relationship = InferPairedKeywordRelationship(word2vec, cooccurance_matrix)    
+    print(infer_paired_keyword_relationship.execute(keywords[0], keywords[1]))
 
 
 if __name__ == "__main__":
