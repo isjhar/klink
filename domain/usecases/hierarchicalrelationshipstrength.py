@@ -8,10 +8,10 @@ class HierarchicalRelationShipStrength:
         self.cooccurance_matrix = cooccurance_matrix
 
     def execute(self, keyword1, keyword2):
-        probabilityK1K2 = self.cooccurance_matrix.getPairedKeywordProbability(keyword1,keyword2)
-        probabilityK2K1 = self.cooccurance_matrix.getPairedKeywordProbability(keyword2, keyword1)
+        probability_k1_k2 = self.cooccurance_matrix.getPairedKeywordProbability(keyword1,keyword2)
+        probability_k2_k1 = self.cooccurance_matrix.getPairedKeywordProbability(keyword2, keyword1)
         similarity = self.word_embedding.similarity(keyword1, keyword2)
-        return (probabilityK2K1 - probabilityK1K2) * similarity * (1 + self.calculateIdenticalWords(keyword1, keyword2))
+        return (probability_k2_k1 - probability_k1_k2) * similarity * (1 + self.calculateIdenticalWords(keyword1, keyword2))
     
     def calculateIdenticalWords(self, keyword1, keyword2):
         total = 0

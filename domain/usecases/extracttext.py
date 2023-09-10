@@ -10,12 +10,12 @@ class ExtractText:
         self.sent_tokenizer = sent_tokenizer
         
     def execute(self, text):
-        sentenceResult = []
+        tokenized_sentences = []
         sentences = self.sent_tokenizer.tokenize(text)
         for sentence in sentences:
-            tokenResult = [];
+            tokenized_sentence = [];
             tokens = self.tokenize.execute(sentence)        
             for token in tokens:
-                tokenResult.append(token)
-            sentenceResult.append(tokenResult)
-        return sentenceResult
+                tokenized_sentence.append(token)
+            tokenized_sentences.append(tokenized_sentence)
+        return tokenized_sentences

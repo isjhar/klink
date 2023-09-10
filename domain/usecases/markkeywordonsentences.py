@@ -7,14 +7,15 @@ class MarkKeywordOnSentences:
         results = tokenized_sentences.copy()
         combined_keywords_dict = {}
         largest_level = -1
-        for keyword in keywords:            
-            key = len(keyword.split(self.separator))
-            if key > largest_level:
-                largest_level = key
-            if not (key in combined_keywords_dict):
-                combined_keywords_dict[key] = []
-            keyword_buckets = combined_keywords_dict[key]
-            keyword_buckets.append(keyword)
+        for equalKeywords in keywords:            
+            for keyword in equalKeywords.items:
+                key = len(keyword.split(self.separator))
+                if key > largest_level:
+                    largest_level = key
+                if not (key in combined_keywords_dict):
+                    combined_keywords_dict[key] = []
+                keyword_buckets = combined_keywords_dict[key]
+                keyword_buckets.append(keyword)
 
         
         for level in reversed(range(largest_level+1)):

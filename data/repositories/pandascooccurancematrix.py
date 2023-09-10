@@ -27,3 +27,6 @@ class PandasCooccuranceMatrix(CooccuranceMatrix):
         if keyword2 in self.cooccurance_matrix.index and keyword1 in self.cooccurance_matrix.loc[keyword2].index:
             total_column = self.cooccurance_matrix.loc[keyword2][keyword1]
         return total_row + total_column
+    
+    def __str__(self) -> str:
+        return str(self.cooccurance_matrix)
