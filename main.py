@@ -7,6 +7,7 @@ from domain.entities.keyword import Keyword
 from domain.usecases.extracttext import ExtractText
 from domain.usecases.hierarchicalrelationshipstrength import HierarchicalRelationshipStrength
 from domain.usecases.inferpairedkeywordrelationship import InferPairedKeywordRelationship
+from domain.usecases.klink import Klink
 from domain.usecases.markkeywordonsentences import MarkKeywordOnSentences
 from domain.usecases.processcooccurance import ProcessCooccurance
 from domain.usecases.senttokenize import SentTokenize
@@ -25,13 +26,10 @@ def main():
 
 
     word2vec = Word2VecWordEmbbedding(marked_tokenized_sentences)
-
-    processCooccurance = ProcessCooccurance(cooccurance_counter=PandasCooccuranceCounter())
-    cooccurance_matrix = processCooccurance.execute(keywords, marked_tokenized_sentences)           
-
+    cooccurance_counter=PandasCooccuranceCounter()
     
-    infer_paired_keyword_relationship = InferPairedKeywordRelationship(word2vec, cooccurance_matrix)    
-    print(infer_paired_keyword_relationship.execute(keywords[0], keywords[1]))
+    klink = Klink(word2vec, cooccurance_counter)
+    klink.execute(keywords, marked_tokenized_sentences)
 
 
 if __name__ == "__main__":
