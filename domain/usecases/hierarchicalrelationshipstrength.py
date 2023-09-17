@@ -13,8 +13,12 @@ class HierarchicalRelationshipStrength:
             keyword1, keyword2)
         probability_k2_k1 = keyword2_weight * self.cooccurance_matrix.getPairedKeywordProbability(
             keyword2, keyword1)
-        similarity = self.word_embedding.similarity(keyword1, keyword2)
-        return (probability_k2_k1 - probability_k1_k2) * similarity * (1 + self.name_similarity(keyword1, keyword2))
+        similarity = self.word_embedding.similarity(
+            keyword1.items[0], keyword2.items[0])
+        name_similarity = self.name_similarity(keyword1, keyword2)
+        # print("keyword1={} keyword2={} p(x|y)={} p(y|x)={} cos(x,y)={} n(x,y)={}".format(
+        #     str(keyword1), str(keyword2), probability_k1_k2, probability_k2_k1, similarity, name_similarity))
+        return (probability_k2_k1 - probability_k1_k2) * similarity * (1 + name_similarity)
 
     def name_similarity(self, keyword1: Keyword, keyword2: Keyword):
         max = -9999999

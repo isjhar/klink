@@ -19,6 +19,8 @@ class Klink:
         tokenized_sentences_by_year = tokenized_corpus.getTokenizedSentencesByYear()
         token_debut = tokenized_corpus.getTokenDebut()
 
+        subClassOfRelationship = {}
+
         while merge_keyword_exist:
             merge_keyword_exist = False
             cooccurance_matrix = self.process_cooccurance.execute(
@@ -27,7 +29,12 @@ class Klink:
                 processed_keywords, tokenized_sentences_by_year)
 
             infer_paired_keyword_relationship = InferPairedKeywordRelationship(
-                self.word_embedding, cooccurance_matrix, cooccurance_matrix_by_year, year=self.year, token_debut=token_debut)
+                self.word_embedding,
+                cooccurance_matrix,
+                cooccurance_matrix_by_year,
+                year=self.year,
+                token_debut=token_debut,
+                sub_class_of_relationship=subClassOfRelationship)
 
             equalRelation = {}
             subClassOfRelationship = {}
