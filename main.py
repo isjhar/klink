@@ -16,11 +16,14 @@ from domain.usecases.senttokenize import SentTokenize
 
 def main():
     keywords = [Keyword(["im_isjhar"]), Keyword(["from"]),
-                Keyword(["i"]), Keyword(["work"])]
-    corpus = [Article(2020, "hello im abdul. my role as tester"),
+                Keyword(["i"]), Keyword(["work"]),
+                Keyword(["im_abdul"])]
+    corpus = [Article(2020, "hello im abdul from bandung. my role as tester. i work at pt digital solution"),
+              Article(
+                  2020, "hello im isjhar from indonesia. i work at pt jaringan mega komputasi"),
               Article(
                   2021, "hello im isjhar from makassar. my role as software engineering"),
-              Article(2021, "i work as software developer.")]
+              Article(2021, "i work as software developer."),]
 
     extract_text = ExtractText(NltkSentTokenizer(), NltkTokenizer())
     tokenized_corpus = extract_text.execute(corpus)
@@ -30,6 +33,7 @@ def main():
 
     word2vec = Word2VecWordEmbbedding(
         tokenized_corpus.getTokenizedSentences())
+
     cooccurance_counter = PandasCooccuranceCounter()
 
     klink = Klink(word_embedding=word2vec,

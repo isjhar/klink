@@ -29,14 +29,41 @@ class Klink:
             infer_paired_keyword_relationship = InferPairedKeywordRelationship(
                 self.word_embedding, cooccurance_matrix, cooccurance_matrix_by_year, year=self.year, token_debut=token_debut)
 
-            for keyword1 in keywords:
-                for keyword2 in keywords:
+            equalRelation = {}
+            subClassOfRelationship = {}
+
+            for keyword1 in processed_keywords:
+                for keyword2 in processed_keywords:
                     if keyword1 != keyword2:
                         relationship = infer_paired_keyword_relationship.execute(
                             keyword1, keyword2)
-                        print(relationship)
+
                         if relationship == Relationship.EQUAL:
                             merge_keyword_exist = True
+                            keyword1_key = str(keyword1)
+                            keyword2_key = str(keyword2)
+                            if keyword1_key + keyword2_key not in equalRelation or keyword2_key + keyword1_key not in equalRelation:
+                                equalRelation[keyword1_key +
+                                              keyword2_key] = [keyword1, keyword2]
+
+                        if relationship == Relationship.HIERACHICAL:
+                            if keyword1_key + keyword2_key in equalRelation:
+                                del equalRelation[keyword1_key +
+                                                  keyword2_key]
+                            if keyword2_key + keyword1_key in equalRelation:
+                                del equalRelation[keyword2_key +
+                                                  keyword1_key]
+
+                            keyword1_key = str(keyword1)
+                            if keyword1_key not in subClassOfRelationship:
+                                subClassOfRelationship[keyword1_key] = []
+                            subClassOfRelationship[keyword1_key].append(
+                                keyword2)
+
+            print(equalRelation)
+            print("hierarchilcal")
+            for item in subClassOfRelationship:
+                print(item + " sub area of " + str(item[1]))
 
     def buildCooccuranceMatrixYear(self, keywords, tokenized_sentences_by_year: dict):
         coocurance_matrix_per_year = {}
