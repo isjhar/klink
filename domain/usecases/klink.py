@@ -36,8 +36,8 @@ class Klink:
                 token_debut=token_debut,
                 sub_class_of_relationship=subClassOfRelationship)
 
-            equalRelation = {}
-            subClassOfRelationship = {}
+            equal_relationship = {}
+            sub_class_of_relationship = {}
 
             for keyword1 in processed_keywords:
                 for keyword2 in processed_keywords:
@@ -49,28 +49,33 @@ class Klink:
                             merge_keyword_exist = True
                             keyword1_key = str(keyword1)
                             keyword2_key = str(keyword2)
-                            if keyword1_key + keyword2_key not in equalRelation or keyword2_key + keyword1_key not in equalRelation:
-                                equalRelation[keyword1_key +
-                                              keyword2_key] = [keyword1, keyword2]
+                            if keyword1_key + keyword2_key not in equal_relationship or keyword2_key + keyword1_key not in equal_relationship:
+                                equal_relationship[keyword1_key +
+                                                   keyword2_key] = [keyword1, keyword2]
 
                         if relationship == Relationship.HIERACHICAL:
-                            if keyword1_key + keyword2_key in equalRelation:
-                                del equalRelation[keyword1_key +
-                                                  keyword2_key]
-                            if keyword2_key + keyword1_key in equalRelation:
-                                del equalRelation[keyword2_key +
-                                                  keyword1_key]
+                            if keyword1_key + keyword2_key in equal_relationship:
+                                del equal_relationship[keyword1_key +
+                                                       keyword2_key]
+                            if keyword2_key + keyword1_key in equal_relationship:
+                                del equal_relationship[keyword2_key +
+                                                       keyword1_key]
 
                             keyword1_key = str(keyword1)
-                            if keyword1_key not in subClassOfRelationship:
-                                subClassOfRelationship[keyword1_key] = []
-                            subClassOfRelationship[keyword1_key].append(
+                            if keyword1_key not in sub_class_of_relationship:
+                                sub_class_of_relationship[keyword1_key] = []
+                            sub_class_of_relationship[keyword1_key].append(
                                 keyword2)
 
-            print(equalRelation)
-            print("hierarchilcal")
-            for item in subClassOfRelationship:
-                print(item + " sub area of " + str(item[1]))
+            for key in equal_relationship:
+                relationship = equal_relationship[key]
+                keyword1 = relationship[0]
+                keyword2 = relationship[1]
+                for item in keyword2.items:
+                    keyword1.add_equal_keyword(item)
+                processed_keywords.remove(keyword2)
+
+        return processed_keywords, sub_class_of_relationship
 
     def buildCooccuranceMatrixYear(self, keywords, tokenized_sentences_by_year: dict):
         coocurance_matrix_per_year = {}
