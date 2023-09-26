@@ -55,7 +55,7 @@ class Klink:
                             merge_keyword_exist = True
                             keyword1_key = str(keyword1)
                             keyword2_key = str(keyword2)
-                            if keyword1_key + keyword2_key not in equal_relationship or keyword2_key + keyword1_key not in equal_relationship:
+                            if keyword1_key + keyword2_key not in equal_relationship and keyword2_key + keyword1_key not in equal_relationship:
                                 equal_relationship[keyword1_key +
                                                    keyword2_key] = [keyword1, keyword2]
 
