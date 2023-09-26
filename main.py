@@ -4,10 +4,12 @@ from data.repositories.nltktokenizer import NltkTokenizer
 from data.repositories.pandascooccurancecounter import PandasCooccuranceCounter
 from data.repositories.pandascsvreader import PandasCsvReader
 from data.repositories.pypdfreader import PyPdfReader
+from data.repositories.sklearnscoring import SklearnScoring
 from data.repositories.urlfiledownloader import UrlFileDownloader
 from data.repositories.word2vecwordembedding import Word2VecWordEmbbedding
 from domain.entities.article import Article
 from domain.entities.keyword import Keyword
+from domain.usecases.calculatescore import CalculateScore
 from domain.usecases.createcorpus import CreateCorpus
 from domain.usecases.extracttext import ExtractText
 from domain.usecases.hierarchicalrelationshipstrength import HierarchicalRelationshipStrength
@@ -39,9 +41,13 @@ def main():
 
     klink = Klink(word_embedding=word2vec,
                   cooccurance_counter=cooccurance_counter, year=2019)
-    merged_keywords, relationship = klink.execute(keywords, tokenized_corpus)
-    for merged_keyword in merged_keywords:
+    graph = klink.execute(keywords, tokenized_corpus)
+    for merged_keyword in graph.keywords:
         print(str(merged_keyword))
+
+    calculate_score = CalculateScore(
+        graph=graph, scoring=SklearnScoring(), csv_reader=PandasCsvReader())
+    calculate_score.execute("validation.csv")
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+from domain.entities.graph import Graph
 from domain.entities.relationship import Relationship
 from domain.entities.tokenizedcorpus import TokenizedCorpus
 from domain.repositories.cooccurancecounter import CooccuranceCounter
@@ -12,7 +13,7 @@ class Klink:
         self.process_cooccurance = ProcessCooccurance(cooccurance_counter)
         self.year = year
 
-    def execute(self, keywords: list, tokenized_corpus: TokenizedCorpus):
+    def execute(self, keywords: list, tokenized_corpus: TokenizedCorpus) -> Graph:
         merge_keyword_exist = True
         processed_keywords = [] + keywords
         tokenized_sentences = tokenized_corpus.getTokenizedSentences()
@@ -68,9 +69,9 @@ class Klink:
                                                        keyword1_key]
 
                             keyword1_key = str(keyword1)
-                            if keyword1_key not in sub_class_of_relationship:
-                                sub_class_of_relationship[keyword1_key] = []
-                            sub_class_of_relationship[keyword1_key].append(
+                            if keyword1 not in sub_class_of_relationship:
+                                sub_class_of_relationship[keyword1] = []
+                            sub_class_of_relationship[keyword1].append(
                                 keyword2)
 
             for key in equal_relationship:
@@ -89,7 +90,7 @@ class Klink:
                 if child_keyword in processed_keywords:
                     processed_keywords.remove(child_keyword)
 
-        return processed_keywords, sub_class_of_relationship
+        return Graph(processed_keywords, sub_class_of_relationship)
 
     def buildCooccuranceMatrixYear(self, keywords, tokenized_sentences_by_year: dict):
         coocurance_matrix_per_year = {}
