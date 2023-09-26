@@ -20,8 +20,11 @@ class Klink:
         token_debut = tokenized_corpus.getTokenDebut()
 
         subClassOfRelationship = {}
+        iterasi = 0
 
         while merge_keyword_exist:
+            iterasi += 1
+            print("iterasi ke-{}".format(iterasi))
             merge_keyword_exist = False
             cooccurance_matrix = self.process_cooccurance.execute(
                 processed_keywords, tokenized_sentences)
@@ -44,6 +47,9 @@ class Klink:
                     if keyword1 != keyword2:
                         relationship = infer_paired_keyword_relationship.execute(
                             keyword1, keyword2)
+
+                        print("compare {} -> {} :::: {}".format(keyword1,
+                              keyword2, relationship))
 
                         if relationship == Relationship.EQUAL:
                             merge_keyword_exist = True
@@ -80,7 +86,8 @@ class Klink:
                 for item in child_keyword.items:
                     parent_keyword.addEqualKeyword(item)
 
-                processed_keywords.remove(child_keyword)
+                if child_keyword in processed_keywords:
+                    processed_keywords.remove(child_keyword)
 
         return processed_keywords, sub_class_of_relationship
 

@@ -22,8 +22,9 @@ class InferPairedKeywordRelationship:
             word_embedding, cooccurance_matrix)
         self.equal_relationship = EqualRelationship(
             word_embedding, cooccurance_matrix, sub_class_of_relationship)
-        self.temporal_hierarchical_relationship_strength = HierarchicalRelationshipStrength(
-            word_embedding, cooccurance_matrix_by_year[year])
+        if year in cooccurance_matrix_by_year:
+            self.temporal_hierarchical_relationship_strength = HierarchicalRelationshipStrength(
+                word_embedding, cooccurance_matrix_by_year[year])
 
     def execute(self, keyword1, keyword2) -> Relationship:
         hierarchical_relationship_strength_value = self.hierarchical_relationship_strength.execute(
@@ -38,15 +39,17 @@ class InferPairedKeywordRelationship:
 
         keyword1_weight = self.get_temporal_weight(keyword1)
         keyword2_weight = self.get_temporal_weight(keyword2)
-        temporal_hierarchical_relationship_strength_value = self.temporal_hierarchical_relationship_strength.execute(
-            keyword1, keyword2, keyword1_weight, keyword2_weight)
 
-        if temporal_hierarchical_relationship_strength_value > self.temporal_hirearchical_threshold:
-            return Relationship.HIERACHICAL
+        if self.temporal_hierarchical_relationship_strength != None:
+            temporal_hierarchical_relationship_strength_value = self.temporal_hierarchical_relationship_strength.execute(
+                keyword1, keyword2, keyword1_weight, keyword2_weight)
 
-        print("compare {} -> {} :::: hierarchical: {}, equal: {}, temporal: {}".format(keyword1, keyword2,
-                                                                                       hierarchical_relationship_strength_value,
-                                                                                       equal_relationship_value, temporal_hierarchical_relationship_strength_value))
+            if temporal_hierarchical_relationship_strength_value > self.temporal_hirearchical_threshold:
+                return Relationship.HIERACHICAL
+
+        # print("compare {} -> {} :::: hierarchical: {}, equal: {}, temporal: {}".format(keyword1, keyword2,
+        #                                                                                hierarchical_relationship_strength_value,
+        #                                                                                equal_relationship_value, temporal_hierarchical_relationship_strength_value))
 
         return Relationship.NONE
 
