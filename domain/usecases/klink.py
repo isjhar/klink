@@ -71,9 +71,16 @@ class Klink:
                 relationship = equal_relationship[key]
                 keyword1 = relationship[0]
                 keyword2 = relationship[1]
-                for item in keyword2.items:
-                    keyword1.add_equal_keyword(item)
-                processed_keywords.remove(keyword2)
+                parent_keyword = keyword1
+                child_keyword = keyword2
+                if keyword2.isContains(keyword1):
+                    parent_keyword = keyword2
+                    child_keyword = keyword1
+
+                for item in child_keyword.items:
+                    parent_keyword.addEqualKeyword(item)
+
+                processed_keywords.remove(child_keyword)
 
         return processed_keywords, sub_class_of_relationship
 
