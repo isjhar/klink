@@ -10,7 +10,8 @@
             "request": "launch",
             "program": "main.py",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": true,
+            "args": ["-c", "sample_corpus.csv", "-k", "sample_keywords.csv", "-v", "sample_validation.csv"]
         }
     ]
 }
