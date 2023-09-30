@@ -26,6 +26,20 @@ def main():
         '-c', '--corpus', help='csv file containsn list of pdf urls')
     parser.add_argument(
         '-v', '--validation', help='csv file contains validation')
+    parser.add_argument(
+        '-t', default=0.2, help='hierarchical threshold, default = 0.2')
+    parser.add_argument(
+        '-th', default=0.2, help='temporal hierarchical threshold, default = 0.2')
+    parser.add_argument(
+        '-te', default=0.75, help='equal threshold, default = 0.75')
+    parser.add_argument(
+        '-y', default=2023, help='equal threshold, default = 2023')
+    parser.add_argument(
+        '-g', default=2, help='gamma, default = 2')
+    parser.add_argument(
+        '-wsa', default=0.2, help='gamma, default = 0.2')
+    parser.add_argument(
+        '-wsub', default=0.2, help='gamma, default = 0.2')
 
     args = parser.parse_args()
 
@@ -50,7 +64,14 @@ def main():
     cooccurance_counter = PandasCooccuranceCounter()
 
     klink = Klink(word_embedding=word2vec,
-                  cooccurance_counter=cooccurance_counter, year=2019)
+                  cooccurance_counter=cooccurance_counter,
+                  year=args.y,
+                  hirearchical_threshold=args.t,
+                  temporal_hirearchical_threshold=args.th,
+                  equal_threshold=args.te,
+                  gamma=args.g,
+                  wsa=args.wsa,
+                  wsub=args.wsub)
     graph = klink.execute(keywords, tokenized_corpus)
     for merged_keyword in graph.keywords:
         print(str(merged_keyword))
