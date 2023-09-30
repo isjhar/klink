@@ -8,7 +8,21 @@ from domain.usecases.processcooccurance import ProcessCooccurance
 
 
 class Klink:
-    def __init__(self, word_embedding: WordEmbedding, cooccurance_counter: CooccuranceCounter, year):
+    def __init__(self, word_embedding: WordEmbedding, cooccurance_counter: CooccuranceCounter,
+                 year: int,
+                 hirearchical_threshold: float,
+                 temporal_hirearchical_threshold: float,
+                 equal_threshold: float,
+                 gamma: int,
+                 wsa: float,
+                 wsub: float):
+
+        self.hirearchical_threshold = hirearchical_threshold
+        self.temporal_hirearchical_threshold = temporal_hirearchical_threshold
+        self.equal_threshold = equal_threshold
+        self.gamma = gamma
+        self.wsa = wsa
+        self.wsub = wsub
         self.word_embedding = word_embedding
         self.process_cooccurance = ProcessCooccurance(cooccurance_counter)
         self.year = year
@@ -38,7 +52,13 @@ class Klink:
                 cooccurance_matrix_by_year,
                 year=self.year,
                 token_debut=token_debut,
-                sub_class_of_relationship=subClassOfRelationship)
+                sub_class_of_relationship=subClassOfRelationship,
+                hirearchical_threshold=self.hirearchical_threshold,
+                temporal_hirearchical_threshold=self.temporal_hirearchical_threshold,
+                equal_threshold=self.equal_threshold,
+                gamma=self.gamma,
+                wsa=self.wsa,
+                wsub=self.wsub)
 
             equal_relationship = {}
             sub_class_of_relationship = {}
