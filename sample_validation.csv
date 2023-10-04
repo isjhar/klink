@@ -1,2 +1,14 @@
 keyword1,keyword2,relationship
-experiment,experimental_software,equal
+Knowledge graph,ontology,equal
+ontology,Taxonomy induction,equal
+Knowledge graph,Taxonomy induction,equal
+Hybrid reasoning,Axiom extraction from text,equal
+Large medical ontologies,Axiom extraction from text,equal
+Large medical ontologies,Hybrid Reasoning,equal
+Relation extraction,Domain adaptation,equal
+Adversarial learning,Relation extraction,equal
+Relation extraction,Domain adaptation,equal
+Knowledge Graph Completion,Schema Aware,equal
+Knowledge Graph Completion,Knowledge Graph Representation ,equal
+Approximate Reasoning ,Knowledge Graph Reasoning,subclassof
+Consistency Checking,Approximate Reasoning,subclassof
