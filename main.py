@@ -33,7 +33,7 @@ def main():
     parser.add_argument(
         '-te', default=0.75, help='equal threshold, default = 0.75')
     parser.add_argument(
-        '-y', default=2023, help='equal threshold, default = 2023')
+        '-y', default=2023, help='equal threshold, default = 2023', type=int)
     parser.add_argument(
         '-g', default=2, help='gamma, default = 2')
     parser.add_argument(
