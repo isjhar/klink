@@ -39,7 +39,7 @@ class InferPairedKeywordRelationship:
         hierarchical_relationship_strength_value = self.hierarchical_relationship_strength.execute(
             keyword1, keyword2)
         if hierarchical_relationship_strength_value > self.hirearchical_threshold:
-            return Relationship.HIERACHICAL
+            return Relationship.HIERARCHICAL
 
         equal_relationship_value = self.equal_relationship.execute(
             keyword1, keyword2, wsa=self.wsa, wsub=self.wsub)
@@ -54,7 +54,7 @@ class InferPairedKeywordRelationship:
                 keyword1, keyword2, keyword1_weight, keyword2_weight)
 
             if temporal_hierarchical_relationship_strength_value > self.temporal_hirearchical_threshold:
-                return Relationship.HIERACHICAL
+                return Relationship.HIERARCHICAL
 
         # print("compare {} -> {} :::: hierarchical: {}, equal: {}, temporal: {}".format(keyword1, keyword2,
         #                                                                                hierarchical_relationship_strength_value,

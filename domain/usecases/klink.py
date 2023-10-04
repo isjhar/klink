@@ -80,7 +80,7 @@ class Klink:
                                 equal_relationship[keyword1_key +
                                                    keyword2_key] = [keyword1, keyword2]
 
-                        if relationship == Relationship.HIERACHICAL:
+                        if relationship == Relationship.HIERARCHICAL:
                             if keyword1_key + keyword2_key in equal_relationship:
                                 del equal_relationship[keyword1_key +
                                                        keyword2_key]

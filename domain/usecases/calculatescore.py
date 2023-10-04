@@ -1,6 +1,7 @@
 from domain.entities.graph import Graph
 from domain.entities.scoring import Scoring
 from domain.repositories.csvreader import CsvReader
+from domain.usecases.preprocesskeyword import PreprocessKeyword
 
 
 class CalculateScore:
@@ -8,15 +9,16 @@ class CalculateScore:
         self.graph = graph
         self.csv_reader = csv_reader
         self.scoring = scoring
+        self.preprocess_keyword = PreprocessKeyword()
 
     def execute(self, validation_file_name):
         rows = self.csv_reader.read(validation_file_name)
         validations = []
         predictions = []
         for row in rows:
-            keyword1 = row[0]
-            keyword2 = row[1]
-            relationship = row[2]
+            keyword1 = self.preprocess_keyword.execute(row[0])
+            keyword2 = self.preprocess_keyword.execute(row[1])
+            relationship = row[2].strip().lower()
             predicted_relationship = self.getPredictedRelationship(
                 keyword1, keyword2)
             validations.append(relationship)
