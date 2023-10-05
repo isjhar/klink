@@ -1,4 +1,5 @@
 from domain.entities.graph import Graph
+from domain.entities.keyword import Keyword
 from domain.entities.relationship import Relationship
 from domain.entities.tokenizedcorpus import TokenizedCorpus
 from domain.repositories.cooccurancecounter import CooccuranceCounter
@@ -34,7 +35,7 @@ class Klink:
         tokenized_sentences_by_year = tokenized_corpus.getTokenizedSentencesByYear()
         token_debut = tokenized_corpus.getTokenDebut()
 
-        subClassOfRelationship = {}
+        sub_class_of_relationship = {}
         iterasi = 0
 
         while merge_keyword_exist:
@@ -52,7 +53,7 @@ class Klink:
                 cooccurance_matrix_by_year,
                 year=self.year,
                 token_debut=token_debut,
-                sub_class_of_relationship=subClassOfRelationship,
+                sub_class_of_relationship=sub_class_of_relationship,
                 hirearchical_threshold=self.hirearchical_threshold,
                 temporal_hirearchical_threshold=self.temporal_hirearchical_threshold,
                 equal_threshold=self.equal_threshold,
@@ -62,6 +63,7 @@ class Klink:
 
             equal_relationship = {}
             sub_class_of_relationship = {}
+            temporal_sub_class_of_relationship = {}
 
             for keyword1 in processed_keywords:
                 for keyword2 in processed_keywords:
@@ -70,15 +72,10 @@ class Klink:
                             keyword1, keyword2)
 
                         print("compare {} -> {} :::: {}".format(keyword1,
-                              keyword2, relationship))
+                                                                keyword2, relationship))
 
-                        if relationship == Relationship.EQUAL:
-                            merge_keyword_exist = True
-                            keyword1_key = str(keyword1)
-                            keyword2_key = str(keyword2)
-                            if keyword1_key + keyword2_key not in equal_relationship and keyword2_key + keyword1_key not in equal_relationship:
-                                equal_relationship[keyword1_key +
-                                                   keyword2_key] = [keyword1, keyword2]
+                        keyword1_key = str(keyword1)
+                        keyword2_key = str(keyword2)
 
                         if relationship == Relationship.HIERARCHICAL:
                             if keyword1_key + keyword2_key in equal_relationship:
@@ -88,10 +85,48 @@ class Klink:
                                 del equal_relationship[keyword2_key +
                                                        keyword1_key]
 
-                            keyword1_key = str(keyword1)
-                            if keyword1 not in sub_class_of_relationship:
-                                sub_class_of_relationship[keyword1] = []
-                            sub_class_of_relationship[keyword1].append(
+                            if keyword2 in temporal_sub_class_of_relationship and keyword1 in temporal_sub_class_of_relationship[keyword2]:
+                                temporal_sub_class_of_relationship[keyword2].remove(
+                                    keyword1)
+
+                            self.insertPairedKeywordToSubClassOfRelationship(
+                                keyword1, keyword2, sub_class_of_relationship)
+
+                        if relationship == Relationship.EQUAL:
+                            merge_keyword_exist = True
+
+                            if keyword1_key + keyword2_key in equal_relationship:
+                                continue
+
+                            if keyword2_key + keyword1_key in equal_relationship:
+                                continue
+
+                            if keyword1 in temporal_sub_class_of_relationship and keyword2 in temporal_sub_class_of_relationship[keyword1]:
+                                temporal_sub_class_of_relationship[keyword1].remove(
+                                    keyword2)
+
+                            if keyword2 in temporal_sub_class_of_relationship and keyword1 in temporal_sub_class_of_relationship[keyword2]:
+                                temporal_sub_class_of_relationship[keyword2].remove(
+                                    keyword1)
+
+                            equal_relationship[keyword1_key +
+                                               keyword2_key] = [keyword1, keyword2]
+
+                        if relationship == Relationship.HIERARCHICAL_TEMPORAL:
+                            if keyword1_key + keyword2_key in equal_relationship:
+                                continue
+
+                            if keyword2_key + keyword1_key in equal_relationship:
+                                continue
+
+                            if keyword2 in sub_class_of_relationship and keyword1 in sub_class_of_relationship[keyword2]:
+                                continue
+
+                            if keyword1 not in temporal_sub_class_of_relationship:
+                                temporal_sub_class_of_relationship[keyword1] = [
+                                ]
+
+                            temporal_sub_class_of_relationship[keyword1].append(
                                 keyword2)
 
             for key in equal_relationship:
@@ -110,6 +145,11 @@ class Klink:
                 if child_keyword in processed_keywords:
                     processed_keywords.remove(child_keyword)
 
+            for temporal_keyword1 in temporal_sub_class_of_relationship:
+                for temporal_keyword2 in temporal_sub_class_of_relationship[temporal_keyword1]:
+                    self.insertPairedKeywordToSubClassOfRelationship(
+                        temporal_keyword1, temporal_keyword2, sub_class_of_relationship)
+
         return Graph(processed_keywords, sub_class_of_relationship)
 
     def buildCooccuranceMatrixYear(self, keywords, tokenized_sentences_by_year: dict):
@@ -120,3 +160,16 @@ class Klink:
                 keywords, tokenized_sentences)
             coocurance_matrix_per_year[year] = cooccurance_matrix
         return coocurance_matrix_per_year
+
+    def hasEqualRelationship(self, keyword1_key: str, keyword2_key: str, equal_relationship: dict):
+        return keyword1_key + keyword2_key not in equal_relationship and keyword2_key + keyword1_key not in equal_relationship
+
+    def insertPairedKeywordToSubClassOfRelationship(self, keyword1: Keyword, keyword2: Keyword, sub_class_of_relationship):
+        if keyword1 not in sub_class_of_relationship:
+            sub_class_of_relationship[keyword1] = []
+
+        if keyword2 in sub_class_of_relationship[keyword1]:
+            return
+
+        sub_class_of_relationship[keyword1].append(
+            keyword2)

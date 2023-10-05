@@ -24,6 +24,9 @@ class CalculateScore:
             validations.append(relationship)
             predictions.append(predicted_relationship)
 
+            print("compare {} -> {} :::: prediction: {}, actual: {}".format(keyword1,
+                                                                            keyword2, predicted_relationship, relationship))
+
         self.scoring.score(validations, predictions)
 
     def getPredictedRelationship(self, keyword1: str, keyword2: str) -> str:

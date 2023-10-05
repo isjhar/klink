@@ -54,7 +54,7 @@ class InferPairedKeywordRelationship:
                 keyword1, keyword2, keyword1_weight, keyword2_weight)
 
             if temporal_hierarchical_relationship_strength_value > self.temporal_hirearchical_threshold:
-                return Relationship.HIERARCHICAL
+                return Relationship.HIERARCHICAL_TEMPORAL
 
         # print("compare {} -> {} :::: hierarchical: {}, equal: {}, temporal: {}".format(keyword1, keyword2,
         #                                                                                hierarchical_relationship_strength_value,
