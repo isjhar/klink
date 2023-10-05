@@ -36,7 +36,8 @@ class CalculateScore:
 
         for predicted_keyword1 in self.graph.relationships:
             if keyword1 in predicted_keyword1.items:
-                predicted_keyword2 = self.graph.relationships[predicted_keyword1]
-                if keyword2 in predicted_keyword2.items:
-                    return "subclassof"
+                predicted_keywords2 = self.graph.relationships[predicted_keyword1]
+                for predicted_keyword2 in predicted_keywords2:
+                    if keyword2 in predicted_keyword2.items:
+                        return "subclassof"
         return "none"

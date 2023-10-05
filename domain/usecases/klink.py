@@ -29,19 +29,20 @@ class Klink:
         self.year = year
 
     def execute(self, keywords: list, tokenized_corpus: TokenizedCorpus) -> Graph:
-        merge_keyword_exist = True
         processed_keywords = [] + keywords
         tokenized_sentences = tokenized_corpus.getTokenizedSentences()
         tokenized_sentences_by_year = tokenized_corpus.getTokenizedSentencesByYear()
         token_debut = tokenized_corpus.getTokenDebut()
 
         sub_class_of_relationship = {}
+        equal_relationship = {}
         iterasi = 0
 
-        while merge_keyword_exist:
+        while iterasi == 0 or len(equal_relationship) > 0:
             iterasi += 1
             print("iterasi ke-{}".format(iterasi))
-            merge_keyword_exist = False
+            equal_relationship = {}
+
             cooccurance_matrix = self.process_cooccurance.execute(
                 processed_keywords, tokenized_sentences)
             cooccurance_matrix_by_year = self.buildCooccuranceMatrixYear(
@@ -61,8 +62,6 @@ class Klink:
                 wsa=self.wsa,
                 wsub=self.wsub)
 
-            equal_relationship = {}
-            sub_class_of_relationship = {}
             temporal_sub_class_of_relationship = {}
 
             for keyword1 in processed_keywords:
@@ -71,9 +70,6 @@ class Klink:
                         relationship = infer_paired_keyword_relationship.execute(
                             keyword1, keyword2)
 
-                        print("compare {} -> {} :::: {}".format(keyword1,
-                                                                keyword2, relationship))
-
                         keyword1_key = str(keyword1)
                         keyword2_key = str(keyword2)
 
@@ -81,20 +77,29 @@ class Klink:
                             if keyword1_key + keyword2_key in equal_relationship:
                                 del equal_relationship[keyword1_key +
                                                        keyword2_key]
+                                print("delete {} -> {} :::: equal relation",
+                                      keyword1, keyword2)
+
                             if keyword2_key + keyword1_key in equal_relationship:
                                 del equal_relationship[keyword2_key +
                                                        keyword1_key]
+                                print(
+                                    "delete {} -> {} :::: equal relation".format(keyword1, keyword2))
 
                             if keyword2 in temporal_sub_class_of_relationship and keyword1 in temporal_sub_class_of_relationship[keyword2]:
                                 temporal_sub_class_of_relationship[keyword2].remove(
                                     keyword1)
 
+                                print(
+                                    "delete {} -> {} :::: hiearchical temporal relation".format(keyword2, keyword1))
+
                             self.insertPairedKeywordToSubClassOfRelationship(
                                 keyword1, keyword2, sub_class_of_relationship)
 
-                        if relationship == Relationship.EQUAL:
-                            merge_keyword_exist = True
+                            print(
+                                "add {} -> {} :::: hiearchical relation".format(keyword1, keyword2))
 
+                        if relationship == Relationship.EQUAL:
                             if keyword1_key + keyword2_key in equal_relationship:
                                 continue
 
@@ -105,12 +110,21 @@ class Klink:
                                 temporal_sub_class_of_relationship[keyword1].remove(
                                     keyword2)
 
+                                print(
+                                    "delete {} -> {} :::: hiearchical temporal relation".format(keyword1, keyword2))
+
                             if keyword2 in temporal_sub_class_of_relationship and keyword1 in temporal_sub_class_of_relationship[keyword2]:
                                 temporal_sub_class_of_relationship[keyword2].remove(
                                     keyword1)
 
+                                print(
+                                    "delete {} -> {} :::: hiearchical temporal relation".format(keyword2, keyword1))
+
                             equal_relationship[keyword1_key +
                                                keyword2_key] = [keyword1, keyword2]
+
+                            print(
+                                "add {} -> {} :::: equal relation".format(keyword1, keyword2))
 
                         if relationship == Relationship.HIERARCHICAL_TEMPORAL:
                             if keyword1_key + keyword2_key in equal_relationship:
@@ -128,6 +142,9 @@ class Klink:
 
                             temporal_sub_class_of_relationship[keyword1].append(
                                 keyword2)
+
+                            print(
+                                "add {} -> {} :::: hierarchical temporal relation".format(keyword1, keyword2))
 
             for key in equal_relationship:
                 relationship = equal_relationship[key]
