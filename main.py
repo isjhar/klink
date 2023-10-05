@@ -73,8 +73,6 @@ def main():
                   wsa=args.wsa,
                   wsub=args.wsub)
     graph = klink.execute(keywords, tokenized_corpus)
-    for merged_keyword in graph.keywords:
-        print(str(merged_keyword))
 
     calculate_score = CalculateScore(
         graph=graph, scoring=SklearnScoring(), csv_reader=PandasCsvReader())
