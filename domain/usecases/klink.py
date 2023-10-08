@@ -40,7 +40,7 @@ class Klink:
 
         while iterasi == 0 or len(equal_relationship) > 0:
             iterasi += 1
-            print("iterasi ke-{}".format(iterasi))
+            print("--start iterasi ke-{}".format(iterasi))
             equal_relationship = {}
 
             cooccurance_matrix = self.process_cooccurance.execute(
@@ -166,6 +166,24 @@ class Klink:
                 for temporal_keyword2 in temporal_sub_class_of_relationship[temporal_keyword1]:
                     self.insertPairedKeywordToSubClassOfRelationship(
                         temporal_keyword1, temporal_keyword2, sub_class_of_relationship)
+
+            print("----------result iterasi {}".format(iterasi))
+            no_relation_keywords = []
+            for keyword1 in sub_class_of_relationship:
+                if keyword1 not in no_relation_keywords:
+                    no_relation_keywords.append(keyword1)
+                keyword2s = sub_class_of_relationship[keyword1]
+                for keyword2 in keyword2s:
+                    if keyword2 not in no_relation_keywords:
+                        no_relation_keywords.append(keyword2)
+                    print("{} subclassof {}".format(
+                        str(keyword1), str(keyword2)))
+
+            for keyword in processed_keywords:
+                if keyword not in no_relation_keywords:
+                    print("{}".format(keyword))
+
+            print("--end iterasi ke-{}".format(iterasi))
 
         return Graph(processed_keywords, sub_class_of_relationship)
 
