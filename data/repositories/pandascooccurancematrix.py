@@ -20,9 +20,9 @@ class PandasCooccuranceMatrix(CooccuranceMatrix):
         total_row = 0
         total_column = 0
         str_keyword = str(keyword)
-        if str_keyword in self.cooccurance_matrix.index:
+        if not self.cooccurance_matrix.empty and str_keyword in self.cooccurance_matrix.index:
             total_row = self.cooccurance_matrix.loc[str_keyword]["total"]
-        if str_keyword in self.cooccurance_matrix.loc["total"].index:
+        if not self.cooccurance_matrix.empty and str_keyword in self.cooccurance_matrix.loc["total"].index:
             total_column = self.cooccurance_matrix.loc["total"][str_keyword]
         return total_row+total_column
 
