@@ -4,6 +4,6 @@ from domain.entities.scoring import Scoring
 
 class SklearnScoring(Scoring):
     def score(self, validations, actuals):
-        print('fscore: {}'.format(f1_score(validations, actuals, average="macro")))
+        print('fscore: {}'.format(f1_score(validations, actuals, average="micro")))
         print('precision: {}'.format(precision_score(
-            validations, actuals, average="macro")))
+            validations, actuals, average="micro")))
