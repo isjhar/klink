@@ -146,15 +146,57 @@ class Klink:
                             print(
                                 "add {} -> {} :::: hierarchical temporal relation".format(keyword1, keyword2))
 
+            for temporal_keyword1 in temporal_sub_class_of_relationship:
+                for temporal_keyword2 in temporal_sub_class_of_relationship[temporal_keyword1]:
+                    self.insertPairedKeywordToSubClassOfRelationship(
+                        temporal_keyword1, temporal_keyword2, sub_class_of_relationship)
+
+            keylist = list(equal_relationship.keys())
+            for key in keylist:
+                if key not in equal_relationship:
+                    continue
+                relationship = equal_relationship[key]
+                keyword1 = relationship[0]
+                keyword2 = relationship[1]
+
+                isSubClassOfRelationSame = self.isSubClassOfRelationSame(
+                    sub_class_of_relationship, keyword1, keyword2)
+
+                if isSubClassOfRelationSame:
+                    continue
+
+                del equal_relationship[key]
+                print(
+                    "delete {} -> {} :::: equal relation".format(keyword1, keyword2))
+
             for key in equal_relationship:
                 relationship = equal_relationship[key]
                 keyword1 = relationship[0]
                 keyword2 = relationship[1]
+                print("{} --equal--> {}".format(str(keyword1), str(keyword2)))
+
+            for keyword1 in sub_class_of_relationship:
+                for keyword2 in sub_class_of_relationship[keyword1]:
+                    print("{} --subclassof--> {}".format(str(keyword1), str(keyword2)))
+
+            for key in equal_relationship:
+                relationship = equal_relationship[key]
+                keyword1 = self.findParentKeywords(
+                    processed_keywords, relationship[0])
+                keyword2 = self.findParentKeywords(
+                    processed_keywords, relationship[1])
+
+                if keyword1 is None or keyword2 is None or keyword1 == keyword2:
+                    continue
+
                 parent_keyword = keyword1
                 child_keyword = keyword2
                 if keyword2.isContains(keyword1):
                     parent_keyword = keyword2
                     child_keyword = keyword1
+
+                print("{} MERGE TO {}".format(
+                    str(child_keyword), str(parent_keyword)))
 
                 for item in child_keyword.items:
                     parent_keyword.addEqualKeyword(item)
@@ -162,10 +204,24 @@ class Klink:
                 if child_keyword in processed_keywords:
                     processed_keywords.remove(child_keyword)
 
-            for temporal_keyword1 in temporal_sub_class_of_relationship:
-                for temporal_keyword2 in temporal_sub_class_of_relationship[temporal_keyword1]:
-                    self.insertPairedKeywordToSubClassOfRelationship(
-                        temporal_keyword1, temporal_keyword2, sub_class_of_relationship)
+            merged_sub_class_of_relationships = {}
+            for keyword1 in sub_class_of_relationship:
+                for keyword2 in sub_class_of_relationship[keyword1]:
+                    merged_keyword1 = self.findParentKeywords(
+                        processed_keywords, keyword1)
+                    merged_keyword2 = self.findParentKeywords(
+                        processed_keywords, keyword2)
+                    if merged_keyword1 not in merged_sub_class_of_relationships:
+                        merged_sub_class_of_relationships[merged_keyword1] = []
+                    if merged_keyword2 in merged_sub_class_of_relationships[merged_keyword1]:
+                        continue
+                    if merged_keyword1 == merged_keyword2:
+                        continue
+
+                    merged_sub_class_of_relationships[merged_keyword1].append(
+                        merged_keyword2)
+
+            sub_class_of_relationship = merged_sub_class_of_relationships
 
             print("----------result iterasi {}".format(iterasi))
             no_relation_keywords = []
@@ -179,6 +235,7 @@ class Klink:
                     print("{} subclassof {}".format(
                         str(keyword1), str(keyword2)))
 
+            print("--no relation")
             for keyword in processed_keywords:
                 if keyword not in no_relation_keywords:
                     print("{}".format(keyword))
@@ -208,3 +265,39 @@ class Klink:
 
         sub_class_of_relationship[keyword1].append(
             keyword2)
+
+    def findParentKeywords(self, processed_keywords: list, keyword: Keyword):
+        for processed_keyword in processed_keywords:
+            if processed_keyword.isContains(keyword):
+                return processed_keyword
+        return None
+
+    def isSubClassOfRelationSame(self, sub_class_of_relationship: dict, keyword1: Keyword, keyword2: Keyword):
+        keyword1SubClassOfRelationships = self.getSubClassOfRelationShip(
+            sub_class_of_relationship, keyword1)
+        keyword2SubClassOfRelationships = self.getSubClassOfRelationShip(
+            sub_class_of_relationship, keyword2)
+
+        for keyword1SubClassOfRelationship in keyword1SubClassOfRelationships:
+            isFound = False
+            for keyword2SubClassOfRelationship in keyword2SubClassOfRelationships:
+                if keyword1SubClassOfRelationship[0] == keyword1 and keyword2SubClassOfRelationship[0] == keyword2 and keyword1SubClassOfRelationship[1] == keyword2SubClassOfRelationship[1]:
+                    isFound = True
+                    break
+
+                if keyword1SubClassOfRelationship[1] == keyword1 and keyword2SubClassOfRelationship[1] == keyword2 and keyword1SubClassOfRelationship[0] == keyword2SubClassOfRelationship[0]:
+                    isFound = True
+                    break
+
+            if not isFound:
+                return False
+        return True
+
+    def getSubClassOfRelationShip(self, sub_class_of_relationship: dict, keyword: Keyword):
+        result = []
+        for keyword1 in sub_class_of_relationship:
+            for keyword2 in sub_class_of_relationship[keyword1]:
+                if keyword1 == keyword or keyword2 == keyword:
+                    result.append([keyword1, keyword2])
+
+        return result

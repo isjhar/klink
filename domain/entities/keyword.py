@@ -3,6 +3,8 @@ class Keyword:
         self.items = items
 
     def addEqualKeyword(self, new_item: str):
+        if new_item in self.items:
+            return
         inserted_index = len(self.items)-1
         for i, item in enumerate(self.items):
             if new_item < item:
