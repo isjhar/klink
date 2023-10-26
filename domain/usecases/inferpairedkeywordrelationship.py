@@ -31,6 +31,7 @@ class InferPairedKeywordRelationship:
         self.gamma = gamma
         self.equal_relationship = EqualRelationship(
             word_embedding, cooccurance_matrix, sub_class_of_relationship)
+        self.temporal_hierarchical_relationship_strength = None
         if year in cooccurance_matrix_by_year:
             self.temporal_hierarchical_relationship_strength = HierarchicalRelationshipStrength(
                 word_embedding, cooccurance_matrix_by_year[year])
